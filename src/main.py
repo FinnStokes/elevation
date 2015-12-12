@@ -8,6 +8,8 @@ import os
 import pygame
 from pygame.locals import *
 
+import entity
+
 ONEONSQRT2 = 0.70710678118
 
 def main(screenRes):
@@ -53,10 +55,14 @@ def main(screenRes):
     while True:
         # level.dx = 0
         # level.dy = 0
-        # sprites = pygame.sprite.Group()
+        sprites = pygame.sprite.Group()
         # player = character.Player(spawnLoc.x, spawnLoc.y, 800, level)
         # sprites.add(player)
         # guards = character.GuardManager(player, level, screenRect)
+        img = pygame.Surface((60, 60))
+        img.fill((100, 0, 0))
+        e = entity.Entity(img,300,300,60,0)
+        sprites.add(e)
 
         # Initialise clock
         clock = pygame.time.Clock()
@@ -89,14 +95,16 @@ def main(screenRes):
                         return
 
             # level.update(dt, dx, dy)
-            # sprites.update(dt, dx, dy)
+            sprites.update(dt)
+            #for body in entity.bodies:
+            #    body.update(dt)
             # guards.update(dt, dx, dy)
 
             # Blit everything to the screen
             screen.blit(background, (0,0))
             # level.draw(screenRect, screen)
             # guards.draw(screen)
-            # sprites.draw(screen)
+            sprites.draw(screen)
             pygame.display.flip()
 
         # splash = True
