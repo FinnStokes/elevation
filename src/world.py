@@ -1,7 +1,7 @@
 import pygame
 from pygame.locals import *
 import pytmx
-import util_pygame as pytmxutil
+import pytmx.util_pygame as pytmxutil
 
 class Level():
     """A tile-based level"""
@@ -20,7 +20,7 @@ class Level():
         left = rect.left
 
         if self.data.background_color:
-            surface.fill(pygame.Color(self.data.background_color))
+            self.surface.fill(pygame.Color(self.data.background_color))
 
         for layer in self.data.visible_layers:
             # draw map tile layers
