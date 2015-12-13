@@ -8,7 +8,7 @@ RIGHT = 2
 TOP = 3
 BOTTOM = 4
 
-class Body():
+class Body(object):
     def __init__(self, pos, size, vel=(0,0), acc=(0,0)):
         self.pos = pos
         self.size = size
@@ -33,19 +33,19 @@ class Body():
 
     @left.setter
     def left(self, value):
-        self.pos[0] = value
+        self.pos = (value, self.pos[1])
         
     @right.setter
     def right(self, value):
-        self.pos[0] = value - self.size[0]
+        self.pos = (value - self.size[0], self.pos[1])
         
     @top.setter
     def top(self, value):
-        self.pos[1] = value
+        self.pos = (self.pos[0], value)
         
     @bottom.setter
     def bottom(self, value):
-        self.pos[1] = value - self.size[1]
+        self.pos = (self.pos[0], value - self.size[1])
 
     def bounding_box(self, dt):
         if self.acc[0] != 0:
@@ -138,7 +138,10 @@ class Body():
                         xin = []
                     else:
                         sqrt_ldesc = math.sqrt(ldesc)
-                        xin = [((-v0x - sqrt_ldesc)/ax, (-v0x + sqrt_ldesc)/ax, LEFT)]
+                        if rdesc == 0:
+                            xin = [((-v0x - sqrt_ldesc)/ax, -v0x/ax, LEFT), (-v0x/ax, (-v0x + sqrt_ldesc)/ax, RIGHT)]
+                        else:
+                            xin = [((-v0x - sqrt_ldesc)/ax, (-v0x + sqrt_ldesc)/ax, LEFT)]
                 else:
                     sqrt_ldesc = math.sqrt(ldesc)
                     sqrt_rdesc = math.sqrt(rdesc)
@@ -149,7 +152,10 @@ class Body():
                         xin = []
                     else:
                         sqrt_rdesc = math.sqrt(rdesc)
-                        xin = [((-v0x + sqrt_rdesc)/ax, (-v0x - sqrt_rdesc)/ax, RIGHT)]
+                        if ldesc == 0:
+                            xin = [((-v0x + sqrt_rdesc)/ax, -v0x/ax, RIGHT), (-v0x/ax, (-v0x - sqrt_rdesc)/ax, LEFT)]
+                        else:
+                            xin = [((-v0x + sqrt_rdesc)/ax, (-v0x - sqrt_rdesc)/ax, RIGHT)]
                 else:
                     sqrt_ldesc = math.sqrt(ldesc)
                     sqrt_rdesc = math.sqrt(rdesc)
@@ -174,7 +180,10 @@ class Body():
                         yin = []
                     else:
                         sqrt_tdesc = math.sqrt(tdesc)
-                        yin = [((-v0y - sqrt_tdesc)/ay, (-v0y + sqrt_tdesc)/ay, TOP)]
+                        if bdesc == 0:
+                            yin = [((-v0y - sqrt_tdesc)/ay, -v0y/ay, TOP), (-v0y/ay, (-v0y + sqrt_tdesc)/ay, BOTTOM)]
+                        else:
+                            yin = [((-v0y - sqrt_tdesc)/ay, (-v0y + sqrt_tdesc)/ay, TOP)]
                 else:
                     sqrt_tdesc = math.sqrt(tdesc)
                     sqrt_bdesc = math.sqrt(bdesc)
@@ -185,12 +194,16 @@ class Body():
                         yin = []
                     else:
                         sqrt_bdesc = math.sqrt(bdesc)
-                        yin = [((-v0y + sqrt_bdesc)/ay, (-v0y - sqrt_bdesc)/ay, BOTTOM)]
+                        if tdesc == 0:
+                            yin = [((-v0y + sqrt_bdesc)/ay, -v0y/ay, BOTTOM), (-v0y/ay, (-v0y - sqrt_bdesc)/ay, TOP)]
+                        else:
+                            yin = [((-v0y + sqrt_bdesc)/ay, (-v0y - sqrt_bdesc)/ay, BOTTOM)]
                 else:
                     sqrt_tdesc = math.sqrt(tdesc)
                     sqrt_bdesc = math.sqrt(bdesc)
                     yin = [((-v0y + sqrt_bdesc)/ay, (-v0y + sqrt_tdesc)/ay, BOTTOM), ((-v0y - sqrt_tdesc)/ay, (-v0y - sqrt_bdesc)/ay, TOP)]
 
+        #print(other, xin, yin)
         for xwin in xin:
             if xwin[1] <= 0:
                 continue

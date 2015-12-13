@@ -14,10 +14,23 @@ import world
 
 ONEONSQRT2 = 0.70710678118
 
-def main(screenRes):
+def main():
     # Initialise screen
     pygame.init()
-    screen = pygame.display.set_mode(screenRes, pygame.FULLSCREEN|pygame.DOUBLEBUF)
+
+    screen = pygame.display.set_mode()
+
+    # Load level from tiled level file
+    level = world.Level(os.path.join("data","4level.tmx"))
+
+    #spawnLoc = level.data.get_object_by_name("Player")
+
+    ###########################
+    #spawnLoc = find the tile with Spawn=True
+    #goalLoc = find the tile with Goal=True
+    ###########################
+
+    screen = pygame.display.set_mode(level.surface.get_size())
     pygame.display.set_caption('Elevation')
     screenRect = screen.get_rect()
 
@@ -49,16 +62,6 @@ def main(screenRes):
     #             else:
     #                 splash = False
     
-    # Load level from tiled level file
-    level = world.Level(os.path.join("data","4level.tmx"))
-
-    #spawnLoc = level.data.get_object_by_name("Player")
-
-    ###########################
-    #spawnLoc = find the tile with Spawn=True
-    #goalLoc = find the tile with Goal=True
-    ###########################
-
     while True:
         # level.dx = 0
         # level.dy = 0
@@ -68,7 +71,8 @@ def main(screenRes):
         # guards = character.GuardManager(player, level, screenRect)
         img = pygame.Surface((60, 60))
         img.fill((100, 0, 0))
-        e = entity.Entity(img,300,300,150,0)
+        #e = entity.Entity(img,300,300,150,0)
+        e = entity.Entity(img,100,30,150,0)
         entities.add(e)
 
         # Initialise clock
@@ -102,13 +106,17 @@ def main(screenRes):
                         return
 
             # level.update(dt, dx, dy)
-            entities.update(dt, ())
+            entities.update(dt, level.walls)
             # guards.update(dt, dx, dy)
 
             # Blit everything to the screen
             screen.blit(background, (0,0))
             level.draw(screenRect, screen)
             entities.draw(screen)
+            # for body in e.contact:
+            #     img = pygame.Surface(body[0].size)
+            #     img.fill((0, 0, 100))
+            #     screen.blit(img, body[0].pos)
             pygame.display.flip()
 
         # splash = True
@@ -138,10 +146,12 @@ if __name__ == '__main__':
                         help="File to store profiling output in")
     parser.add_argument('-p', '--profile', action='store_true',
                         help="Enable profiling using cProfile")
-    parser.add_argument('-r', '--resolution', action='store', type=resolution, default=(0,0),
-                        help="Target screen resolution (e.g. 1920x1080)")
+    # parser.add_argument('-r', '--resolution', action='store', type=resolution, default=(0,0),
+    #                     help="Target screen resolution (e.g. 1920x1080)")
     args = parser.parse_args()
     if args.profile:
-        cProfile.run("main(args.resolution)", filename=args.profile_file)
+        # cProfile.run("main(args.resolution)", filename=args.profile_file)
+        cProfile.run("main()", filename=args.profile_file)
     else:
-        main(args.resolution)
+        # main(args.resolution)
+        main()

@@ -36,7 +36,12 @@ class Entity(pygame.sprite.Sprite):
         return callback
 
     def collide(self, body, side):
-        pass
+        if side == physics.LEFT and self.target_vel[0] < 0:
+            # print("collideleft")
+            self.target_vel = (-self.target_vel[0], self.target_vel[1])
+        elif side == physics.RIGHT and self.target_vel[0] > 0:
+            # print("collideright")
+            self.target_vel = (-self.target_vel[0], self.target_vel[1])
         # if side == physics.LEFT and self.body.vel[0] < 0:
         #     self.body.vel = (body.vel[0], self.body.vel[1])
         # if side == physics.RIGHT and self.body.vel[0] > 0:
@@ -58,7 +63,7 @@ class Entity(pygame.sprite.Sprite):
         # elif side == physics.RIGHT:
         #     self.body.vel = (self.target_vel[0], self.body.vel[1])
 
-    def update(self, dt, bodies, to=0):
+    def update(self, dt, bodies, to=0, n=0):
         # print("upd", dt)
         self.body.vel = (self.target_vel[0], self.body.vel[1])
         self.body.acc = (0, self.gravity)
@@ -70,8 +75,8 @@ class Entity(pygame.sprite.Sprite):
             ay = self.body.acc[1] - body.acc[1]
             v0x = self.body.vel[0] - body.vel[0]
             v0y = self.body.vel[1] - body.vel[1]
-            # print(side)
             if side == physics.LEFT:
+                self.body.left = body.right
                 if v0x < 0:
                     self.body.vel = (body.vel[0], self.body.vel[1])
                     force[side] = True
@@ -79,6 +84,7 @@ class Entity(pygame.sprite.Sprite):
                     self.body.acc = (body.acc[0], self.body.acc[1])
                     force[side] = True
             elif side == physics.RIGHT:
+                self.body.right = body.left
                 if v0x > 0:
                     self.body.vel = (body.vel[0], self.body.vel[1])
                     force[side] = True
@@ -86,6 +92,7 @@ class Entity(pygame.sprite.Sprite):
                     self.body.acc = (body.acc[0], self.body.acc[1])
                     force[side] = True
             elif side == physics.TOP:
+                self.body.top = body.bottom
                 if v0y < 0:
                     self.body.vel = (self.body.vel[0], body.vel[1])
                     force[side] = True
@@ -93,6 +100,7 @@ class Entity(pygame.sprite.Sprite):
                     self.body.acc = (self.body.acc[0], body.acc[1])
                     force[side] = True
             elif side == physics.BOTTOM:
+                self.body.bottom = body.top
                 if v0y > 0:
                     self.body.vel = (self.body.vel[0], body.vel[1])
                     force[side] = True
@@ -124,6 +132,11 @@ class Entity(pygame.sprite.Sprite):
         if action:
             action()
             # print("recurse")
-            self.update(dt - t_min, bodies, to=to+t_min)
+            if n<20:
+                self.update(dt - t_min, bodies, to=to+t_min, n=n+1)
+            else:
+                print("Warning: too many iteration steps in collisions")
+                self.body.update(dt - t_min)
+                self.rect.topleft = self.body.pos
         else:
             self.rect.topleft = self.body.pos
