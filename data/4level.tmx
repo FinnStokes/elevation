@@ -6,35 +6,58 @@
    <property name="Wallwidth" value="37"/>
   </properties>
   <image source="FullWallkindsSheet.png" trans="ffffff" width="791" height="192"/>
+  <tile id="0">
+   <properties>
+    <property name="Floor" value="True"/>
+    <property name="Wall" value="False"/>
+   </properties>
+  </tile>
+  <tile id="1">
+   <properties>
+    <property name="Floor" value="False"/>
+    <property name="Liftshaft" value="True"/>
+    <property name="Wall" value="False"/>
+   </properties>
+  </tile>
   <tile id="2">
    <properties>
+    <property name="Floor" value="True"/>
+    <property name="Wall" value="True"/>
     <property name="Wallpos" value="40"/>
    </properties>
   </tile>
   <tile id="3">
    <properties>
+    <property name="Floor" value="True"/>
+    <property name="Wall" value="True"/>
     <property name="Wallpos" value="0"/>
    </properties>
   </tile>
   <tile id="4">
    <properties>
+    <property name="Floor" value="True"/>
+    <property name="Wall" value="True"/>
     <property name="Wallpos" value="75"/>
    </properties>
   </tile>
   <tile id="5">
    <properties>
+    <property name="Floor" value="True"/>
     <property name="Spawn" value="True"/>
+    <property name="Wall" value="False"/>
    </properties>
   </tile>
   <tile id="6">
    <properties>
+    <property name="Floor" value="True"/>
     <property name="Goal" value="True"/>
+    <property name="Wall" value="False"/>
    </properties>
   </tile>
  </tileset>
  <layer name="Tile Layer 1" width="9" height="4">
   <data encoding="base64" compression="zlib">
-   eJxjY2BgYIRiZijNhESzAjELmhgzkhyyGkYs+pkJqGFEUsMOxAAanABc
+   eJxjY2BgYAJiRiBmhtJMSDQrELOgiTEjySGrYcSin5mAGkYkNexADAAbKABd
   </data>
  </layer>
 </map>
