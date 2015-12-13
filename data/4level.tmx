@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" orientation="orthogonal" renderorder="right-down" width="9" height="4" tilewidth="113" tileheight="192" backgroundcolor="#aaffff" nextobjectid="2">
+ <tileset firstgid="1" name="Blank Walls" tilewidth="113" tileheight="192" tilecount="7">
+  <properties>
+   <property name="Floorheight" value="37"/>
+   <property name="Wallwidth" value="37"/>
+  </properties>
+  <image source="FullWallkindsSheet.png" trans="ffffff" width="791" height="192"/>
+  <tile id="2">
+   <properties>
+    <property name="Wallpos" value="40"/>
+   </properties>
+  </tile>
+  <tile id="3">
+   <properties>
+    <property name="Wallpos" value="0"/>
+   </properties>
+  </tile>
+  <tile id="4">
+   <properties>
+    <property name="Wallpos" value="75"/>
+   </properties>
+  </tile>
+  <tile id="5">
+   <properties>
+    <property name="Spawn" value="True"/>
+   </properties>
+  </tile>
+  <tile id="6">
+   <properties>
+    <property name="Goal" value="True"/>
+   </properties>
+  </tile>
+ </tileset>
+ <layer name="Tile Layer 1" width="9" height="4">
+  <data encoding="base64" compression="zlib">
+   eJxjY2BgYIRiZijNhESzAjELmhgzkhyyGkYs+pkJqGFEUsMOxAAanABc
+  </data>
+ </layer>
+</map>

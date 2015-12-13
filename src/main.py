@@ -48,9 +48,14 @@ def main(screenRes):
     #                 splash = False
     
     # # Load level from tiled level file
-    # level = world.Level(os.path.join("data","world","test.tmx"))
+    level = world.Level(os.path.join("data","4level.tmx"))
 
-    # spawnLoc = level.data.get_object_by_name("Player")
+    #spawnLoc = level.data.get_object_by_name("Player")
+
+    ###########################
+    #spawnLoc = find the tile with Spawn=True
+    #goalLoc = find the tile with Goal=True
+    ###########################
 
     while True:
         # level.dx = 0
@@ -102,8 +107,7 @@ def main(screenRes):
 
             # Blit everything to the screen
             screen.blit(background, (0,0))
-            # level.draw(screenRect, screen)
-            # guards.draw(screen)
+            level.draw(screenRect, screen)
             sprites.draw(screen)
             pygame.display.flip()
 
