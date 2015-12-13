@@ -61,7 +61,8 @@ def main():
     #                 return
     #             else:
     #                 splash = False
-    
+
+    robot_img = pygame.image.load("data/RobotModel.png")
     while True:
         # level.dx = 0
         # level.dy = 0
@@ -69,11 +70,9 @@ def main():
         # player = character.Player(spawnLoc.x, spawnLoc.y, 800, level)
         # sprites.add(player)
         # guards = character.GuardManager(player, level, screenRect)
-        img = pygame.Surface((60, 60))
-        img.fill((100, 0, 0))
         #e = entity.Entity(img,300,300,150,0)
-        player = entity.Entity(img, level.spawn, (150,0))
-        entities.add(player)
+        robot = entity.Entity(robot_img, (58, 98), level.spawn, (150,0))
+        entities.add(robot)
 
         # Initialise clock
         clock = pygame.time.Clock()
@@ -113,7 +112,7 @@ def main():
             screen.blit(background, (0,0))
             level.draw(screenRect, screen)
             entities.draw(screen)
-            # for body in player.contact:
+            # for body in robot.contact:
             #     img = pygame.Surface(body[0].size)
             #     img.fill((0, 0, 100))
             #     screen.blit(img, body[0].pos)

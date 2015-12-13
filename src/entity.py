@@ -10,14 +10,18 @@ import physics
 class Entity(pygame.sprite.Sprite):
     """An entity that moves around the level."""
 
-    def __init__(self, image, (x, y), (vx, vy)):
+    def __init__(self, image, size, (x, y), (vx, vy)):
         pygame.sprite.Sprite.__init__(self)
-        self.image = image
+        self.left_img = image
+        self.right_img = pygame.transform.flip(image, True, False)
+        self.image = self.left_img
         self.rect = image.get_rect()
         self.rect.midbottom = (x, y)
+        self.colliderect = pygame.Rect((0,0), size)
+        self.colliderect.midbottom = self.rect.midbottom
         self.gravity = 300
         self.target_vel = (vx, vy)
-        self.body = physics.Body(self.rect.topleft, (self.rect.width, self.rect.height), (vx, vy), (0, self.gravity))
+        self.body = physics.Body(self.colliderect.topleft, size, (vx, vy), (0, self.gravity))
         self.contact = []
         #self.level = level
 
@@ -134,9 +138,13 @@ class Entity(pygame.sprite.Sprite):
             # print("recurse")
             if n<20:
                 self.update(dt - t_min, bodies, to=to+t_min, n=n+1)
+                return
             else:
                 print("Warning: too many iteration steps in collisions")
-                self.body.update(dt - t_min)
-                self.rect.topleft = self.body.pos
-        else:
-            self.rect.topleft = self.body.pos
+        self.body.update(dt - t_min)
+        self.colliderect.topleft = self.body.pos
+        self.rect.midbottom = self.colliderect.midbottom
+        if self.body.vel[0] > 0:
+            self.image = self.left_img
+        elif self.body.vel[0] < 0:
+            self.image = self.right_img
