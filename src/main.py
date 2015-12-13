@@ -9,6 +9,7 @@ import pygame
 from pygame.locals import *
 
 import entity
+import platform
 
 ONEONSQRT2 = 0.70710678118
 
@@ -31,7 +32,7 @@ def main(screenRes):
     # gameover_screen = pygame.image.load(os.path.join("data", "gameover.png"))
     # gameover_rect = gameover_screen.get_rect()
     # gameover_rect.center = screenRect.center
-    font = pygame.font.SysFont(pygame.font.match_font("sans", "arial"), 50)
+    # font = pygame.font.SysFont(pygame.font.match_font("sans", "arial"), 50)
     
     # splash = True
     # while splash:
@@ -47,8 +48,8 @@ def main(screenRes):
     #             else:
     #                 splash = False
     
-    # # Load level from tiled level file
-    level = world.Level(os.path.join("data","4level.tmx"))
+    # Load level from tiled level file
+    #level = world.Level(os.path.join("data","4level.tmx"))
 
     #spawnLoc = level.data.get_object_by_name("Player")
 
@@ -60,14 +61,22 @@ def main(screenRes):
     while True:
         # level.dx = 0
         # level.dy = 0
-        sprites = pygame.sprite.Group()
+        entities = pygame.sprite.Group()
+        world = pygame.sprite.Group()
         # player = character.Player(spawnLoc.x, spawnLoc.y, 800, level)
         # sprites.add(player)
         # guards = character.GuardManager(player, level, screenRect)
         img = pygame.Surface((60, 60))
         img.fill((100, 0, 0))
         e = entity.Entity(img,300,300,60,0)
-        sprites.add(e)
+        entities.add(e)
+
+        img = pygame.Surface((1000, 10))
+        img.fill((0, 0, 100))
+        world.add(platform.Platform(img, (0,400), (0, -100)))
+        img = pygame.Surface((200, 300))
+        img.fill((0, 0, 100))
+        world.add(platform.Platform(img, (1000,500)))
 
         # Initialise clock
         clock = pygame.time.Clock()
@@ -79,7 +88,7 @@ def main(screenRes):
         max_fps = 0
 
         while True:
-            dt = clock.tick(200) / 1000.0
+            dt = clock.tick(20) / 1000.0
             time += dt
             frames += 1
             if time >= 1.0:
@@ -100,15 +109,14 @@ def main(screenRes):
                         return
 
             # level.update(dt, dx, dy)
-            sprites.update(dt)
-            #for body in entity.bodies:
-            #    body.update(dt)
+            entities.update(dt, (p.body for p in world))
+            world.update(dt)
             # guards.update(dt, dx, dy)
 
             # Blit everything to the screen
             screen.blit(background, (0,0))
-            level.draw(screenRect, screen)
-            sprites.draw(screen)
+            #level.draw(screenRect, screen)
+            entities.draw(screen)
             pygame.display.flip()
 
         # splash = True

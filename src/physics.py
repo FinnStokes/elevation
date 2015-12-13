@@ -6,7 +6,7 @@ UNKNOWN = 0
 LEFT = 1
 RIGHT = 2
 TOP = 3
-BOTTOM =4
+BOTTOM = 4
 
 class Body():
     def __init__(self, pos, size, vel=(0,0), acc=(0,0)):
@@ -117,181 +117,97 @@ class Body():
         v0x = self.vel[0] - other.vel[0]
         v0y = self.vel[1] - other.vel[1]
 
-        if not xin:
-            xin = self.right >= other.left and self.left <= other.right
-        if not yin:
-            yin = self.bottom >= other.top and self.top <= other.bottom
-        if xout:
-            xin = False
-        if yout:
-            yin = False
-        
-        dt = 0
+        inf = float('+inf')
 
-        if xin:
-            if yin:
-                return True, dt, UNKNOWN
+        if ax == 0:
+            if v0x == 0:
+                if self.right > other.left and self.left < other.right:
+                    xin =[(-inf, inf, UNKNOWN)]
+                else:
+                    xin = []
+            elif v0x > 0:
+                xin = [(-(self.right - other.left) * 1.0 / v0x, -(self.left - other.right) * 1.0 / v0x, RIGHT)]
             else:
-                side = UNKNOWN
-                t_yin = float('+inf')
-                t_xout = float('+inf')
-                if self.bottom < other.top:
-                    side = BOTTOM
-                    if ay > 0:
-                        t_yin = (-v0y + math.sqrt(v0y**2 - 2*ay*(self.bottom - other.top)))/ay
-                    elif v0y > 0:
-                        if ay == 0:
-                            t_yin = -(self.bottom - other.top)/v0y
-                        else:
-                            disc = v0y**2 - 2*ay*(self.bottom - other.top)
-                            if disc <= 0:
-                                return False, None, UNKNOWN
-                            t_yin = (-v0y + math.sqrt(disc))/ay
-                else:
-                    side = TOP
-                    if ay < 0:
-                        t_yin = (-v0y - math.sqrt(v0y**2 - 2*ay*(self.top - other.bottom)))/ay
-                    elif v0y < 0:
-                        if ay == 0:
-                            t_yin = -(self.top - other.bottom)/v0y
-                        else:
-                            disc = v0y**2 - 2*ay*(self.top - other.bottom)
-                            if disc <= 0:
-                                return False, None, UNKNOWN
-                            t_yin = (-v0y - math.sqrt(disc))/ay
-                if ax == 0:
-                    if v0x > 0:
-                        t_xout = -(self.left - other.right)/v0x
-                    elif v0x < 0:
-                        t_xout = -(self.right - other.left)/v0x
-                elif ax > 0:
-                    t_xout = (-v0x + math.sqrt(v0x**2 - 2*ax*(self.left - other.right)))/ax
-                    if v0x < 0:
-                        disc = v0x**2 - 2*ax*(self.right - other.left)
-                        if disc > 0:
-                            t_xout = min(t_xout, (-v0x - math.sqrt(disc))/ay)
-                else:
-                    t_xout = (-v0x - math.sqrt(v0x**2 - 2*ax*(self.right - other.left)))/ax
-                    if v0x > 0:
-                        disc = v0x**2 - 2*ax*(self.left - other.right)
-                        if disc > 0:
-                            t_xout = min(t_xout, (-v0x + math.sqrt(disc))/ax)
-
-                if t_yin < t_xout:
-                    return True, t_yin, side
-                elif t_xout < limit:
-                    if n > 10:
-                        print("Warning: too many collision iterations, breaking out from vertical")
-                    return self.next_contact(other, limit, t_xout, n=n+1, xout=True)
+                xin = [(-(self.left - other.right) * 1.0 / v0x, -(self.right - other.left) * 1.0 / v0x, LEFT)]
         else:
-            if yin:
-                side = UNKNOWN
-                t_xin = float('+inf')
-                t_yout = float('+inf')
-                if self.right < other.left:
-                    side = RIGHT
-                    if ax > 0:
-                        t_xin = (-v0x + math.sqrt(v0x**2 - 2*ax*(self.right - other.left)))/ax
-                    elif v0x > 0:
-                        if ax == 0:
-                            t_xin = -(self.right - other.left)/v0x
-                        else:
-                            disc = v0x**2 - 2*ax*(self.right - other.left)
-                            if disc <= 0:
-                                return False, None, UNKNOWN
-                            t_xin = (-v0x + math.sqrt(disc))/ax
+            ldesc = v0x**2 - 2*ax*(self.left - other.right)
+            rdesc = v0x**2 - 2*ax*(self.right - other.left)
+            if ax > 0:
+                if rdesc <= 0:
+                    if ldesc <= 0:
+                        xin = []
+                    else:
+                        sqrt_ldesc = math.sqrt(ldesc)
+                        xin = [((-v0x - sqrt_ldesc)/ax, (-v0x + sqrt_ldesc)/ax, LEFT)]
                 else:
-                    side = LEFT
-                    if ax < 0:
-                        t_xin = (-v0x - math.sqrt(v0x**2 - 2*ax*(self.left - other.right)))/ax
-                    elif v0x < 0:
-                        if ax == 0:
-                            t_xin = -(self.left - other.right)/v0y
-                        else:
-                            disc = v0x**2 - 2*ax*(self.left - other.right)
-                            if disc <= 0:
-                                return False, None, UNKNOWN
-                            t_xin = (-v0x - math.sqrt(disc))/ax
-                if ay == 0:
-                    if v0y > 0:
-                        t_yout = -(self.top - other.bottom)/v0y
-                    elif v0y < 0:
-                        t_yout = -(self.bottom - other.top)/v0y
-                elif ay > 0:
-                    t_yout = (-v0y + math.sqrt(v0y**2 - 2*ay*(self.top - other.bottom)))/ay
-                    if v0y < 0:
-                        disc = v0y**2 - 2*ay*(self.bottom - other.top)
-                        if disc > 0:
-                            t_yout = min(t_yout, (-v0y - math.sqrt(disc))/ay)
-                else:
-                    t_yout = (-v0y - math.sqrt(v0y**2 - 2*ay*(self.bottom - other.top)))/ay
-                    if v0x > 0:
-                        disc = v0y**2 - 2*ay*(self.top - other.bottom)
-                        if disc > 0:
-                            t_yout = min(t_yout, (-v0y + math.sqrt(disc))/ay)
-
-                if t_xin < t_yout:
-                    return True, t_xin, side
-                elif t_yout < limit:
-                    if n > 10:
-                        print("Warning: too many collision iterations, breaking out from horizontal")
-                    return self.next_contact(other, limit, t_yout, n=n+1, yout=True)
+                    sqrt_ldesc = math.sqrt(ldesc)
+                    sqrt_rdesc = math.sqrt(rdesc)
+                    xin = [((-v0x - sqrt_ldesc)/ax, (-v0x - sqrt_rdesc)/ax, LEFT), ((-v0x + sqrt_rdesc)/ax, (-v0x + sqrt_ldesc)/ax, RIGHT)]
             else:
-                t_xin = float('+inf')
-                t_yin = float('+inf')
-                if self.bottom <= other.top:
-                    if ay > 0:
-                        t_yin = (-v0y + math.sqrt(v0y**2 - 2*ay*(self.bottom - other.top)))/ay
-                    elif v0y > 0:
-                        if ay == 0:
-                            t_yin = -(self.bottom - other.top)/v0y
-                        else:
-                            disc = v0y**2 - 2*ay*(self.bottom - other.top)
-                            if disc <= 0:
-                                return False, None, UNKNOWN
-                            t_yin = (-v0y + math.sqrt(disc))/ay
+                if ldesc <= 0:
+                    if rdesc <= 0:
+                        xin = []
+                    else:
+                        sqrt_rdesc = math.sqrt(rdesc)
+                        xin = [((-v0x + sqrt_rdesc)/ax, (-v0x - sqrt_rdesc)/ax, RIGHT)]
                 else:
-                    if ay < 0:
-                        t_yin = (-v0y - math.sqrt(v0y**2 - 2*ay*(self.top - other.bottom)))/ay
-                    elif v0y < 0:
-                        if ay == 0:
-                            t_yin = -(self.top - other.bottom)/v0y
-                        else:
-                            disc = v0y**2 - 2*ay*(self.top - other.bottom)
-                            if disc <= 0:
-                                return False, None, UNKNOWN
-                            t_yin = (-v0y - math.sqrt(disc))/ay
-                if self.right <= other.left:
-                    if ax > 0:
-                        t_xin = (-v0x + math.sqrt(v0x**2 - 2*ax*(self.right - other.left)))/ax
-                    elif v0x > 0:
-                        if ax == 0:
-                            t_xin = -(self.right - other.left)/v0x
-                        else:
-                            disc = v0x**2 - 2*ax*(self.right - other.left)
-                            if disc <= 0:
-                                return False, None, UNKNOWN
-                            t_xin = (-v0x + math.sqrt(disc))/ax
-                else:
-                    if ax < 0:
-                        t_xin = (-v0x - math.sqrt(v0x**2 - 2*ax*(self.left - other.right)))/ax
-                    elif v0x < 0:
-                        if ax == 0:
-                            t_xin = -(self.left - other.right)/v0y
-                        else:
-                            disc = v0x**2 - 2*ax*(self.left - other.right)
-                            if disc <= 0:
-                                return False, None, UNKNOWN
-                            t_xin = (-v0x - math.sqrt(disc))/ax
-                t_next = min(t_yin, t_xin)
-                if t_next < limit and n < 10:
-                    return self.next_contact(other, limit, t_next, n=n+1, xin=(t_next==t_xin), yin=(t_next==t_yin))
-                else:
-                    if n > 10:
-                        print("Warning: too many collision iterations, breaking out from off-axis")
-                    return False, None, UNKNOWN
-        return False, None, UNKNOWN
+                    sqrt_ldesc = math.sqrt(ldesc)
+                    sqrt_rdesc = math.sqrt(rdesc)
+                    xin = [((-v0x + sqrt_rdesc)/ax, (-v0x + sqrt_ldesc)/ax, RIGHT), ((-v0x - sqrt_ldesc)/ax, (-v0x - sqrt_rdesc)/ax, LEFT)]
 
+        if ay == 0:
+            if v0y == 0:
+                if self.bottom > other.top and self.top < other.bottom:
+                    yin =[(-inf, inf, UNKNOWN)]
+                else:
+                    yin = []
+            elif v0y > 0:
+                yin = [(-(self.bottom - other.top) * 1.0 / v0y, -(self.top - other.bottom) * 1.0 / v0y, BOTTOM)]
+            else:
+                yin = [(-(self.top - other.bottom) * 1.0 / v0y, -(self.bottom - other.top) * 1.0 / v0y, TOP)]
+        else:
+            tdesc = v0y**2 - 2*ay*(self.top - other.bottom)
+            bdesc = v0y**2 - 2*ay*(self.bottom - other.top)
+            if ay > 0:
+                if bdesc <= 0:
+                    if tdesc <= 0:
+                        yin = []
+                    else:
+                        sqrt_tdesc = math.sqrt(tdesc)
+                        yin = [((-v0y - sqrt_tdesc)/ay, (-v0y + sqrt_tdesc)/ay, TOP)]
+                else:
+                    sqrt_tdesc = math.sqrt(tdesc)
+                    sqrt_bdesc = math.sqrt(bdesc)
+                    yin = [((-v0y - sqrt_tdesc)/ay, (-v0y - sqrt_bdesc)/ay, TOP), ((-v0y + sqrt_bdesc)/ay, (-v0y + sqrt_tdesc)/ay, BOTTOM)]
+            else:
+                if tdesc <= 0:
+                    if bdesc <= 0:
+                        yin = []
+                    else:
+                        sqrt_bdesc = math.sqrt(bdesc)
+                        yin = [((-v0y + sqrt_bdesc)/ay, (-v0y - sqrt_bdesc)/ay, BOTTOM)]
+                else:
+                    sqrt_tdesc = math.sqrt(tdesc)
+                    sqrt_bdesc = math.sqrt(bdesc)
+                    yin = [((-v0y + sqrt_bdesc)/ay, (-v0y + sqrt_tdesc)/ay, BOTTOM), ((-v0y - sqrt_tdesc)/ay, (-v0y - sqrt_bdesc)/ay, TOP)]
+
+        for xwin in xin:
+            if xwin[1] <= 0:
+                continue
+            for ywin in yin:
+                if ywin[1] <= 0:
+                    continue
+                if ywin[0] > xwin[0]:
+                    t = ywin[0]
+                    side = ywin[2]
+                else:
+                    t = xwin[0]
+                    side = xwin[2]
+                if min(xwin[1], ywin[1]) > t:
+                    return max(t, 0), side
+
+        return inf, UNKNOWN
+                    
     def contact_end(self, other, side):
         ax = self.acc[0] - other.acc[0]
         ay = self.acc[1] - other.acc[1]
@@ -304,12 +220,12 @@ class Body():
 
         if side == TOP or side == BOTTOM:
             if side == TOP:
-                if v0y > 0:
+                if v0y > 0:# or self.top > other.bottom:
                     return 0
                 elif ay > 0:
                     t_yout = -v0y/ay
             elif side == BOTTOM:
-                if v0y < 0:
+                if v0y < 0:# or self.bottom < other.top:
                     return 0
                 elif ay < 0:
                     t_yout = -v0y/ay
@@ -333,12 +249,12 @@ class Body():
             return min(t_xout,t_yout)
         elif side == LEFT or side == RIGHT:
             if side == LEFT:
-                if v0x > 0:
+                if v0x > 0:# or self.left > other.left:
                     return 0
                 elif ax > 0:
                     t_xout = -v0x/ax
             elif side == RIGHT:
-                if v0x < 0:
+                if v0x < 0:# or self.right > other.right:
                     return 0
                 elif ax < 0:
                     t_xout = -v0x/ax
@@ -369,4 +285,4 @@ class Body():
     def update(self, dt):
         self.pos = (self.pos[0] + self.vel[0]*dt + self.acc[0]*(dt**2)/2, self.pos[1] + self.vel[1]*dt + self.acc[1]*(dt**2)/2)
         self.vel = (self.vel[0] + self.acc[0]*dt, self.vel[1] + self.acc[1]*dt)
-        #print(self.vel[1]*dt, self.pos[1])
+        print("phys_update", self.acc[1], self.vel[1], self.bottom, dt)
