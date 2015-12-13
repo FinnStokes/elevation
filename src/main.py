@@ -68,12 +68,12 @@ def main(screenRes):
         # guards = character.GuardManager(player, level, screenRect)
         img = pygame.Surface((60, 60))
         img.fill((100, 0, 0))
-        e = entity.Entity(img,300,300,60,0)
+        e = entity.Entity(img,300,300,150,0)
         entities.add(e)
 
         img = pygame.Surface((1000, 10))
         img.fill((0, 0, 100))
-        world.add(platform.Platform(img, (0,400), (0, -100)))
+        world.add(platform.Platform(img, (0,400), (0, 200), (0, -90)))
         img = pygame.Surface((200, 300))
         img.fill((0, 0, 100))
         world.add(platform.Platform(img, (1000,500)))
@@ -88,7 +88,7 @@ def main(screenRes):
         max_fps = 0
 
         while True:
-            dt = clock.tick(20) / 1000.0
+            dt = clock.tick(200) / 1000.0
             time += dt
             frames += 1
             if time >= 1.0:
@@ -116,6 +116,7 @@ def main(screenRes):
             # Blit everything to the screen
             screen.blit(background, (0,0))
             #level.draw(screenRect, screen)
+            world.draw(screen)
             entities.draw(screen)
             pygame.display.flip()
 

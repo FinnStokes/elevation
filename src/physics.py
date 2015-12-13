@@ -110,7 +110,7 @@ class Body():
             if right >= b_left and left <= b_right and bottom >= b_top and top <= b_bottom:
                 yield b
     
-    def next_contact(self, other, limit, dt=0, n=0, xin=False, yin=False, xout=False, yout=False):
+    def next_contact(self, other):
         ax = self.acc[0] - other.acc[0]
         ay = self.acc[1] - other.acc[1]
 
@@ -285,4 +285,12 @@ class Body():
     def update(self, dt):
         self.pos = (self.pos[0] + self.vel[0]*dt + self.acc[0]*(dt**2)/2, self.pos[1] + self.vel[1]*dt + self.acc[1]*(dt**2)/2)
         self.vel = (self.vel[0] + self.acc[0]*dt, self.vel[1] + self.acc[1]*dt)
-        print("phys_update", self.acc[1], self.vel[1], self.bottom, dt)
+        # print("phys_update", self.acc[1], self.vel[1], self.bottom, dt)
+        
+    def offset(self, dt):
+        return Body(
+            pos = (self.pos[0] + self.vel[0]*dt + self.acc[0]*(dt**2)/2, self.pos[1] + self.vel[1]*dt + self.acc[1]*(dt**2)/2),
+            size = self.size,
+            vel = (self.vel[0] + self.acc[0]*dt, self.vel[1] + self.acc[1]*dt),
+            acc = self.acc
+        )
