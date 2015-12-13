@@ -1,6 +1,7 @@
 # Cosplay Chase
 # A top-down stealth game
 
+import itertools
 import argparse
 import cProfile
 import os
@@ -11,6 +12,7 @@ from pygame.locals import *
 import entity
 import platform
 import world
+import lift
 
 ONEONSQRT2 = 0.70710678118
 
@@ -63,15 +65,19 @@ def main():
     #                 splash = False
 
     robot_img = pygame.image.load("data/RobotModel.png")
+    lift_img = pygame.image.load("data/platform.png")
     while True:
         # level.dx = 0
         # level.dy = 0
         entities = pygame.sprite.Group()
+        lifts = pygame.sprite.Group()
+        for s in level.shafts:
+            lifts.add(lift.Lift(lift_img, s, 160))
         # player = character.Player(spawnLoc.x, spawnLoc.y, 800, level)
         # sprites.add(player)
         # guards = character.GuardManager(player, level, screenRect)
         #e = entity.Entity(img,300,300,150,0)
-        robot = entity.Entity(robot_img, (58, 98), level.spawn, (150,0))
+        robot = entity.Entity(robot_img, (58, 98), level.spawn, (80,0))
         entities.add(robot)
 
         # Initialise clock
@@ -103,15 +109,23 @@ def main():
                 elif event.type == KEYDOWN:
                     if event.key == K_ESCAPE:
                         return
+                    elif event.key == K_UP:
+                        for p in lifts:
+                            p.up()
+                    elif event.key == K_DOWN:
+                        for p in lifts:
+                            p.down()
 
             # level.update(dt, dx, dy)
-            entities.update(dt, level.walls)
+            entities.update(dt, itertools.chain(level.walls, (p.body for p in lifts)))
+            lifts.update(dt)
             # guards.update(dt, dx, dy)
 
             # Blit everything to the screen
             screen.blit(background, (0,0))
             level.draw(screenRect, screen)
             entities.draw(screen)
+            lifts.draw(screen)
             # for body in robot.contact:
             #     img = pygame.Surface(body[0].size)
             #     img.fill((0, 0, 100))

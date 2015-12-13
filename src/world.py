@@ -14,6 +14,7 @@ class Level(object):
         self.walls = []
         self.goal = None
         self.spawn = (0,0)
+        self.shafts = []
         self.refresh(self.surface.get_rect())
 
     def refresh(self, rect):
@@ -28,6 +29,7 @@ class Level(object):
 
         for layer in self.data.visible_tile_layers:
             # iterate over the tiles in the layer
+            inshaft = []
             for x, y, image in self.data.layers[layer].tiles():
                 surface_blit(image, (x * tw - left, y * th - top))
                 properties = self.data.get_tile_properties(x, y, layer)
@@ -48,6 +50,24 @@ class Level(object):
                         self.spawn = (x * tw - left + tw/2, y * th - top + th - floor_height - 0.1)
                     if "Goal" in properties and properties["Goal"] == "True":
                         self.goal = pygame.Rect((x, y), (tw, th))
+                    if "Liftshaft" in properties and properties["Liftshaft"] == "True":
+                        if (x, y) not in inshaft:
+                            inshaft.append((x,y))
+                            shaft_top = y
+                            while shaft_top > 0:
+                                prop = self.data.get_tile_properties(x, shaft_top-1, layer)
+                                if "Liftshaft" not in prop or prop["Liftshaft"] != "True":
+                                    break
+                                shaft_top = shaft_top - 1
+                                inshaft.append((x,shaft_top))
+                            shaft_bottom = y
+                            while shaft_bottom < self.data.height-1:
+                                prop = self.data.get_tile_properties(x, shaft_bottom+1, layer)
+                                if "Liftshaft" not in prop or prop["Liftshaft"] != "True":
+                                    break
+                                shaft_bottom = shaft_bottom + 1
+                                inshaft.append((x,shaft_bottom))
+                            self.shafts.append((x * tw - left + tw/2, shaft_top * th - top + th, shaft_bottom * th - top + th))
 
     def draw(self, rect, surface):
         if self.data.background_color:
