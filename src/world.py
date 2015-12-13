@@ -1,7 +1,7 @@
 import pygame
 from pygame.locals import *
 import pytmx
-import util_pygame as pytmxutil
+import pytmx.util_pygame as pytmxutil
 
 class Level():
     """A tile-based level"""

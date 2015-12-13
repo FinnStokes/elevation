@@ -10,6 +10,7 @@ from pygame.locals import *
 
 import entity
 import platform
+import world
 
 ONEONSQRT2 = 0.70710678118
 
@@ -49,7 +50,7 @@ def main(screenRes):
     #                 splash = False
     
     # Load level from tiled level file
-    #level = world.Level(os.path.join("data","4level.tmx"))
+    level = world.Level(os.path.join("data","4level.tmx"))
 
     #spawnLoc = level.data.get_object_by_name("Player")
 
@@ -62,7 +63,7 @@ def main(screenRes):
         # level.dx = 0
         # level.dy = 0
         entities = pygame.sprite.Group()
-        world = pygame.sprite.Group()
+        platforms = pygame.sprite.Group()
         # player = character.Player(spawnLoc.x, spawnLoc.y, 800, level)
         # sprites.add(player)
         # guards = character.GuardManager(player, level, screenRect)
@@ -73,10 +74,10 @@ def main(screenRes):
 
         img = pygame.Surface((1000, 10))
         img.fill((0, 0, 100))
-        world.add(platform.Platform(img, (0,400), (0, 200), (0, -90)))
+        platforms.add(platform.Platform(img, (0,400), (0, 200), (0, -90)))
         img = pygame.Surface((200, 300))
         img.fill((0, 0, 100))
-        world.add(platform.Platform(img, (1000,500)))
+        platforms.add(platform.Platform(img, (1000,500)))
 
         # Initialise clock
         clock = pygame.time.Clock()
@@ -109,14 +110,14 @@ def main(screenRes):
                         return
 
             # level.update(dt, dx, dy)
-            entities.update(dt, (p.body for p in world))
-            world.update(dt)
+            entities.update(dt, (p.body for p in platforms))
+            platforms.update(dt)
             # guards.update(dt, dx, dy)
 
             # Blit everything to the screen
             screen.blit(background, (0,0))
             #level.draw(screenRect, screen)
-            world.draw(screen)
+            platforms.draw(screen)
             entities.draw(screen)
             pygame.display.flip()
 
