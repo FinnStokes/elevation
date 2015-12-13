@@ -5,13 +5,15 @@ import pytmx.util_pygame as pytmxutil
 
 import physics
 
-class Level():
+class Level(object):
     """A tile-based level"""
 
     def __init__(self, filename):
         self.data = pytmxutil.load_pygame(filename)
         self.surface = pygame.Surface((self.data.width*self.data.tilewidth, self.data.height*self.data.tileheight))
         self.walls = []
+        self.goal = None
+        self.spawn = (0,0)
         self.refresh(self.surface.get_rect())
 
     def refresh(self, rect):
@@ -41,6 +43,11 @@ class Level():
                         fx = x * tw - left + wall_pos
                         fy = y * th - top
                         self.walls.append(physics.Body((fx, fy), (wall_width, th)))
+                    if "Spawn" in properties and properties["Spawn"] == "True":
+                        floor_height = int(self.data.get_tileset_from_gid(self.data.get_tile_gid(x, y, layer)).properties["Floorheight"])
+                        self.spawn = (x * tw - left + tw/2, y * th - top + th - floor_height - 0.1)
+                    if "Goal" in properties and properties["Goal"] == "True":
+                        self.goal = pygame.Rect((x, y), (tw, th))
 
     def draw(self, rect, surface):
         if self.data.background_color:

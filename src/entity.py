@@ -10,14 +10,14 @@ import physics
 class Entity(pygame.sprite.Sprite):
     """An entity that moves around the level."""
 
-    def __init__(self, image, x, y, vx, vy):
+    def __init__(self, image, (x, y), (vx, vy)):
         pygame.sprite.Sprite.__init__(self)
         self.image = image
         self.rect = image.get_rect()
-        self.rect.topleft = (x, y)
+        self.rect.midbottom = (x, y)
         self.gravity = 300
         self.target_vel = (vx, vy)
-        self.body = physics.Body((x, y), (self.rect.width, self.rect.height), (vx, vy), (0, self.gravity))
+        self.body = physics.Body(self.rect.topleft, (self.rect.width, self.rect.height), (vx, vy), (0, self.gravity))
         self.contact = []
         #self.level = level
 

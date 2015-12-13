@@ -72,8 +72,8 @@ def main():
         img = pygame.Surface((60, 60))
         img.fill((100, 0, 0))
         #e = entity.Entity(img,300,300,150,0)
-        e = entity.Entity(img,100,30,150,0)
-        entities.add(e)
+        player = entity.Entity(img, level.spawn, (150,0))
+        entities.add(player)
 
         # Initialise clock
         clock = pygame.time.Clock()
@@ -113,7 +113,7 @@ def main():
             screen.blit(background, (0,0))
             level.draw(screenRect, screen)
             entities.draw(screen)
-            # for body in e.contact:
+            # for body in player.contact:
             #     img = pygame.Surface(body[0].size)
             #     img.fill((0, 0, 100))
             #     screen.blit(img, body[0].pos)
