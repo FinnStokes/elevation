@@ -68,7 +68,6 @@ class Entity(pygame.sprite.Sprite):
         #     self.body.vel = (self.target_vel[0], self.body.vel[1])
 
     def update(self, dt, bodies, to=0, n=0):
-        bodies = list(bodies)
         #print("upd", dt)
         self.body.vel = (self.target_vel[0], self.body.vel[1])
         self.body.acc = (0, self.gravity)

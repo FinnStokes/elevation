@@ -22,8 +22,12 @@ def main():
 
     screen = pygame.display.set_mode()
 
-    # Load level from tiled level file
-    level = world.Level(os.path.join("data","4level.tmx"))
+    # Load levels from tiled level files
+    levels = []
+    f = open(os.path.join("data","levels.txt"))
+    for name in f:
+        levels.append(world.Level(os.path.join("data",name.rstrip())))
+    level_times = [0.0]*len(levels)
 
     #spawnLoc = level.data.get_object_by_name("Player")
 
@@ -31,10 +35,6 @@ def main():
     #spawnLoc = find the tile with Spawn=True
     #goalLoc = find the tile with Goal=True
     ###########################
-
-    screen = pygame.display.set_mode(level.surface.get_size())
-    pygame.display.set_caption('Elevation')
-    screenRect = screen.get_rect()
 
     # Fill background
     background = pygame.Surface(screen.get_size())
@@ -65,10 +65,12 @@ def main():
     #                 splash = False
 
     reset = [False]
+    i = [0]
     
     def win_level():
-        print("You win!")
-        exit(0)
+        print("Well Done!")
+        reset[0] = True
+        i[0] += 1
 
     def lose_level():
         print("Oops! You lost a robot!")
@@ -76,9 +78,16 @@ def main():
 
     robot_img = pygame.image.load("data/RobotModel.png")
     lift_img = pygame.image.load("data/platform.png")
-    while True:
+    while i[0] < len(levels):
+        level = levels[i[0]]
+
+        screen = pygame.display.set_mode(level.surface.get_size())
+        pygame.display.set_caption('Elevation - Level {}'.format(i[0] + 1))
+        screenRect = screen.get_rect()
+
         win_time = 1.0
         lose_time = 1.0
+        reset_time = 1.0
 
         # level.dx = 0
         # level.dy = 0
@@ -132,8 +141,16 @@ def main():
                         for p in lifts:
                             p.down()
 
+            pressed = pygame.key.get_pressed()
+            if pressed[K_UP] and pressed[K_DOWN]:
+                reset_time -= dt
+                if reset_time <= 0:
+                    reset[0] = True
+            else:
+                reset_time = 1.0
+
             # level.update(dt, dx, dy)
-            robots.update(dt, itertools.chain(level.walls, (p.body for p in lifts)))
+            robots.update(dt, list(itertools.chain(level.walls, (p.body for p in lifts))))
             lifts.update(dt)
             remove = []
             for robot in robots:
@@ -143,16 +160,21 @@ def main():
                         break
             for robot in remove:
                 robots.remove(robot)
+            paused = False
             if len(robots) == 0:
+                paused = True
                 win_time -= dt
                 if win_time <= 0:
                     win_level()
             for robot in robots:
                 if not robot.rect.colliderect(screenRect):
+                    paused = True
                     lose_time -= dt
                     if lose_time <= 0:
                         lose_level()
                     break
+            if not paused:
+                level_times[i[0]] += dt
             # guards.update(dt, dx, dy)
 
             # Blit everything to the screen
@@ -180,6 +202,13 @@ def main():
         #                 return
         #             else:
         #                 splash = False
+
+    if i[0] == len(levels):
+        print("You win!")
+        print("Level times:")
+        for j, time in enumerate(level_times):
+            print("Level {}: {:6.1f}s".format(j+1, time))
+        return
 
 def resolution(raw):
     a = raw.split("x")

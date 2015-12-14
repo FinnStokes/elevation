@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" orientation="orthogonal" renderorder="right-down" width="10" height="5" tilewidth="113" tileheight="192" backgroundcolor="#aaffff" nextobjectid="2">
+ <tileset firstgid="1" name="Blank Walls" tilewidth="113" tileheight="192" tilecount="7">
+  <properties>
+   <property name="Floorheight" value="37"/>
+   <property name="Wallwidth" value="37"/>
+  </properties>
+  <image source="FullWallkindsSheet.png" trans="ffffff" width="791" height="192"/>
+  <tile id="0">
+   <properties>
+    <property name="Floor" value="True"/>
+    <property name="Wall" value="False"/>
+   </properties>
+  </tile>
+  <tile id="1">
+   <properties>
+    <property name="Floor" value="False"/>
+    <property name="Liftshaft" value="True"/>
+    <property name="Wall" value="False"/>
+   </properties>
+  </tile>
+  <tile id="2">
+   <properties>
+    <property name="Floor" value="True"/>
+    <property name="Wall" value="True"/>
+    <property name="Wallpos" value="40"/>
+   </properties>
+  </tile>
+  <tile id="3">
+   <properties>
+    <property name="Floor" value="True"/>
+    <property name="Wall" value="True"/>
+    <property name="Wallpos" value="0"/>
+   </properties>
+  </tile>
+  <tile id="4">
+   <properties>
+    <property name="Floor" value="True"/>
+    <property name="Wall" value="True"/>
+    <property name="Wallpos" value="75"/>
+   </properties>
+  </tile>
+  <tile id="5">
+   <properties>
+    <property name="Floor" value="True"/>
+    <property name="Spawn" value="True"/>
+    <property name="Wall" value="False"/>
+   </properties>
+  </tile>
+  <tile id="6">
+   <properties>
+    <property name="Floor" value="True"/>
+    <property name="Goal" value="True"/>
+    <property name="Wall" value="False"/>
+   </properties>
+  </tile>
+ </tileset>
+ <layer name="Tile Layer 1" width="10" height="5">
+  <data encoding="base64" compression="zlib">
+   eJyFikEKADAIw+x08/8/XgUPZQg7hKBNmNkih3i7brQ3SRLP32VXRzf49FMH6SBdyj5R3QU6tACA
+  </data>
+ </layer>
+</map>
