@@ -181,6 +181,18 @@ def main():
                     if goal.contains(robot.rect):
                         remove.append(robot)
                         break
+                for teleporter in level.teleporters:
+                    if teleporter.contains(robot.rect):
+                        dist = float("+inf")
+                        dest = robot.rect.midbottom
+                        for endpoint in level.endpoints:
+                            d = (robot.rect.centerx - endpoint[0])**2 + (robot.rect.bottom - endpoint[1])**2
+                            if d < dist:
+                                dist = d
+                                dest = endpoint
+                        robot.moveto(dest)
+                        robot.contact = []
+                        
             for robot in remove:
                 robots.remove(robot)
             paused = False

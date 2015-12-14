@@ -26,6 +26,8 @@ class Level(object):
         self.shafts = []
         self.buttons = []
         self.spikes = []
+        self.teleporters = []
+        self.endpoints = []
         self.groups = {}
         self.openDoors = pygame.sprite.Group()
         
@@ -100,6 +102,11 @@ class Level(object):
                     if "Spikes" in properties and properties["Spikes"] == "True":
                         floor_height = int(self.data.get_tileset_from_gid(self.data.get_tile_gid(x, y, layer)).properties["Floorheight"])
                         self.spikes.append(pygame.Rect((x * tw - left, y * th - top + th - floor_height*2), (tw, floor_height*2)))
+                    if "Teleporter" in properties and properties["Teleporter"] == "True":
+                        self.teleporters.append(pygame.Rect((x * tw - left, y * th - top), (tw, th)))
+                    if "Endpoint" in properties and properties["Endpoint"] == "True":
+                        floor_height = int(self.data.get_tileset_from_gid(self.data.get_tile_gid(x, y, layer)).properties["Floorheight"])
+                        self.endpoints.append((x * tw - left + tw/2, y * th - top + th - floor_height - 0.1))
 
     def draw(self, rect, surface):
         if self.data.background_color:

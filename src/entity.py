@@ -25,6 +25,11 @@ class Entity(pygame.sprite.Sprite):
         self.contact = []
         #self.level = level
 
+    def moveto(self, pos):
+        self.rect.midbottom = pos
+        self.colliderect.midbottom = self.rect.midbottom
+        self.body.pos = self.colliderect.topleft
+
     def _on_collide(self, body, time, side):
         def callback():
             self.collide(body, side)
