@@ -64,11 +64,22 @@ def main():
     #             else:
     #                 splash = False
 
-    win_time = 1.0
+    reset = [False]
+    
+    def win_level():
+        print("You win!")
+        exit(0)
+
+    def lose_level():
+        print("Oops! You lost a robot!")
+        reset[0] = True
 
     robot_img = pygame.image.load("data/RobotModel.png")
     lift_img = pygame.image.load("data/platform.png")
     while True:
+        win_time = 1.0
+        lose_time = 1.0
+
         # level.dx = 0
         # level.dy = 0
         robots = pygame.sprite.Group()
@@ -92,7 +103,9 @@ def main():
         min_fps = 200
         max_fps = 0
 
-        while True:
+        reset = [False]
+
+        while not reset[0]:
             dt = clock.tick(200) / 1000.0
             time += dt
             frames += 1
@@ -133,8 +146,13 @@ def main():
             if len(robots) == 0:
                 win_time -= dt
                 if win_time <= 0:
-                    print("You win!")
-                    exit(0)
+                    win_level()
+            for robot in robots:
+                if not robot.rect.colliderect(screenRect):
+                    lose_time -= dt
+                    if lose_time <= 0:
+                        lose_level()
+                    break
             # guards.update(dt, dx, dy)
 
             # Blit everything to the screen
