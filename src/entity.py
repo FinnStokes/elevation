@@ -78,6 +78,8 @@ class Entity(pygame.sprite.Sprite):
         self.body.acc = (0, self.gravity)
         # print(self.body.vel)
         # print(self.body.acc)
+        top = self.body.top
+        left = self.body.left
         force = {}
         for body, side in self.contact:
             ax = self.body.acc[0] - body.acc[0]
@@ -86,40 +88,73 @@ class Entity(pygame.sprite.Sprite):
             v0y = self.body.vel[1] - body.vel[1]
             if side == physics.LEFT:
                 self.body.left = body.right
+                force[side] = body
+                if physics.RIGHT in force:
+                    if force[physics.RIGHT].vel[0] != body.vel[0] or force[physics.RIGHT].acc[0] != body.acc[0]:
+                        self.contact = [x for x in self.contact if x[0] not in [b for b in (body, force[physics.RIGHT]) if b.vel[0] != 0 or b.acc[0] != 0]]
+                        self.body.left = left
+                        self.body.vel = (0, self.body.vel[1])
+                        self.body.acc = (0, self.body.acc[1])
+                        continue
                 if v0x < 0:
                     self.body.vel = (body.vel[0], self.body.vel[1])
-                    force[side] = True
                 if v0x <= 0 and ax < 0:
                     self.body.acc = (body.acc[0], self.body.acc[1])
-                    force[side] = True
             elif side == physics.RIGHT:
                 self.body.right = body.left
+                force[side] = body
+                if physics.LEFT in force:
+                    if force[physics.LEFT].vel[0] != body.vel[0] or force[physics.LEFT].acc[0] != body.acc[0]:
+                        self.contact = [x for x in self.contact if x[0] not in [b for b in (body, force[physics.LEFT]) if b.vel[0] != 0 or b.acc[0] != 0]]
+                        self.body.left = left
+                        self.body.vel = (0, self.body.vel[1])
+                        self.body.acc = (0, self.body.acc[1])
+                        continue
+                force[side] = body
+                force[side] = body
                 if v0x > 0:
                     self.body.vel = (body.vel[0], self.body.vel[1])
-                    force[side] = True
                 if v0x >= 0 and ax > 0:
                     self.body.acc = (body.acc[0], self.body.acc[1])
-                    force[side] = True
             elif side == physics.TOP:
                 self.body.top = body.bottom
+                force[side] = body
+                if physics.BOTTOM in force:
+                    if force[physics.BOTTOM].vel[1] != body.vel[1] or force[physics.BOTTOM].acc[1] != body.acc[1]:
+                        self.contact = [x for x in self.contact if x[0] not in [b for b in (body, force[physics.BOTTOM]) if b.vel[1] != 0 or b.acc[1] != 0]]
+                        self.body.top = top
+                        self.body.vel = (self.body.vel[0], 0)
+                        self.body.acc = (self.body.acc[0], 0)
+                        continue
                 if v0y < 0:
                     self.body.vel = (self.body.vel[0], body.vel[1])
-                    force[side] = True
                 if v0y <= 0 and ay < 0:
                     self.body.acc = (self.body.acc[0], body.acc[1])
-                    force[side] = True
             elif side == physics.BOTTOM:
                 self.body.bottom = body.top
+                force[side] = body
+                if physics.TOP in force:
+                    if force[physics.TOP].vel[1] != body.vel[1] or force[physics.TOP].acc[1] != body.acc[1]:
+                        self.contact = [x for x in self.contact if x[0] not in [b for b in (body, force[physics.TOP]) if b.vel[1] != 0 or b.acc[1] != 0]]
+                        self.body.top = top
+                        self.body.vel = (self.body.vel[0], 0)
+                        self.body.acc = (self.body.acc[0], 0)
+                        continue
                 if v0y > 0:
                     self.body.vel = (self.body.vel[0], body.vel[1])
-                    force[side] = True
                 if v0y >= 0 and ay > 0:
                     self.body.acc = (self.body.acc[0], body.acc[1])
-                    force[side] = True
-        if physics.LEFT in force and physics.RIGHT in force:
-            print("Warning: horizontal crush")
-        if physics.TOP in force and physics.BOTTOM in force:
-            print("Warning: vertical crush")
+        # if physics.LEFT in force and physics.RIGHT in force:
+        #     self.body.left = left
+        #     self.body.vel = (0, self.body.vel[1])
+        #     self.body.acc = (0, self.body.acc[1])
+        #     #print("Warning: horizontal crush")
+        # if physics.TOP in force and physics.BOTTOM in force:
+        #     print([(b, b.vel, b.acc) for b in (force[physics.TOP], force[physics.BOTTOM]) if b.vel[1] != 0 or b.acc[1] != 0])
+        #     self.body.top = top
+        #     self.body.vel = (self.body.vel[0], 0)
+        #     self.body.acc = (self.body.acc[0], 0)
+        #     #print("Warning: vertical crush")
         t_min = dt
         action = False
         for body in self.body.proximal(bodies, dt):
