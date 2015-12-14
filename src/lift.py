@@ -53,9 +53,11 @@ class Lift(pygame.sprite.Sprite):
                 self.body.vel = (0,0)
 
     def up(self):
-        self.body.vel = (0, -self.vy)
+        if self.rect.bottom > self.y0:
+            self.body.vel = (0, -self.vy)
         # self.target = self.y0
 
     def down(self):
-        self.body.vel = (0, self.vy)
+        if self.rect.bottom < self.y1:
+            self.body.vel = (0, self.vy)
         # self.target = self.y1
