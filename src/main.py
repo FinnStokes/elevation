@@ -64,12 +64,14 @@ def main():
     #             else:
     #                 splash = False
 
+    win_time = 1.0
+
     robot_img = pygame.image.load("data/RobotModel.png")
     lift_img = pygame.image.load("data/platform.png")
     while True:
         # level.dx = 0
         # level.dy = 0
-        entities = pygame.sprite.Group()
+        robots = pygame.sprite.Group()
         lifts = pygame.sprite.Group()
         for s in level.shafts:
             lifts.add(lift.Lift(lift_img, s, 160))
@@ -77,8 +79,9 @@ def main():
         # sprites.add(player)
         # guards = character.GuardManager(player, level, screenRect)
         #e = entity.Entity(img,300,300,150,0)
-        robot = entity.Entity(robot_img, (58, 98), level.spawn, (80,0))
-        entities.add(robot)
+        for spawn in level.spawn:
+            robot = entity.Entity(robot_img, (58, 98), spawn, (80,0))
+            robots.add(robot)
 
         # Initialise clock
         clock = pygame.time.Clock()
@@ -117,14 +120,27 @@ def main():
                             p.down()
 
             # level.update(dt, dx, dy)
-            entities.update(dt, itertools.chain(level.walls, (p.body for p in lifts)))
+            robots.update(dt, itertools.chain(level.walls, (p.body for p in lifts)))
             lifts.update(dt)
+            remove = []
+            for robot in robots:
+                for goal in level.goals:
+                    if goal.contains(robot.rect):
+                        remove.append(robot)
+                        break
+            for robot in remove:
+                robots.remove(robot)
+            if len(robots) == 0:
+                win_time -= dt
+                if win_time <= 0:
+                    print("You win!")
+                    exit(0)
             # guards.update(dt, dx, dy)
 
             # Blit everything to the screen
             screen.blit(background, (0,0))
             level.draw(screenRect, screen)
-            entities.draw(screen)
+            robots.draw(screen)
             lifts.draw(screen)
             # for body in robot.contact:
             #     img = pygame.Surface(body[0].size)

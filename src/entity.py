@@ -28,13 +28,13 @@ class Entity(pygame.sprite.Sprite):
     def _on_collide(self, body, time, side):
         def callback():
             self.collide(body, side)
-            # print("Collide {} on {}".format(body, side))
+            # print("Collide {} on {} at {}".format(body, side, self.body.pos))
             self.contact.append((body,side))
         return callback
 
     def _on_uncollide(self, body, time, side):
         def callback():
-            # print("Uncollide {}".format(body))
+            # print("Uncollide {} on {} at {}".format(body, side, self.body.pos))
             self.contact = [x for x in self.contact if x[0] != body]
             self.uncollide(body, side)
         return callback
@@ -68,7 +68,8 @@ class Entity(pygame.sprite.Sprite):
         #     self.body.vel = (self.target_vel[0], self.body.vel[1])
 
     def update(self, dt, bodies, to=0, n=0):
-        # print("upd", dt)
+        bodies = list(bodies)
+        #print("upd", dt)
         self.body.vel = (self.target_vel[0], self.body.vel[1])
         self.body.acc = (0, self.gravity)
         # print(self.body.vel)
@@ -135,7 +136,7 @@ class Entity(pygame.sprite.Sprite):
         self.body.update(t_min)
         if action:
             action()
-            # print("recurse")
+            # print("recurse {}".format(n))
             if n<20:
                 self.update(dt - t_min, bodies, to=to+t_min, n=n+1)
                 return

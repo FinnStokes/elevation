@@ -203,7 +203,8 @@ class Body(object):
                     sqrt_bdesc = math.sqrt(bdesc)
                     yin = [((-v0y + sqrt_bdesc)/ay, (-v0y + sqrt_tdesc)/ay, BOTTOM), ((-v0y - sqrt_tdesc)/ay, (-v0y - sqrt_bdesc)/ay, TOP)]
 
-        #print(other, xin, yin)
+        # debug = [xin, yin, ax, ay, v0x, v0y]
+        # print(other,debug)
         for xwin in xin:
             if xwin[1] <= 0:
                 continue
@@ -216,8 +217,8 @@ class Body(object):
                 else:
                     t = xwin[0]
                     side = xwin[2]
-                if min(xwin[1], ywin[1]) > t:
-                    return max(t, 0), side
+                if min(xwin[1], ywin[1]) > t and t >= 0:
+                    return t, side
 
         return inf, UNKNOWN
                     
