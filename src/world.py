@@ -25,6 +25,7 @@ class Level(object):
         self.spawn = []
         self.shafts = []
         self.buttons = []
+        self.spikes = []
         self.groups = {}
         self.openDoors = pygame.sprite.Group()
         
@@ -96,6 +97,9 @@ class Level(object):
                         if group not in self.groups:
                             self.groups[group] = []
                         self.groups[group].append(door)
+                    if "Spikes" in properties and properties["Spikes"] == "True":
+                        floor_height = int(self.data.get_tileset_from_gid(self.data.get_tile_gid(x, y, layer)).properties["Floorheight"])
+                        self.spikes.append(pygame.Rect((x * tw - left, y * th - top + th - floor_height*2), (tw, floor_height*2)))
 
     def draw(self, rect, surface):
         if self.data.background_color:

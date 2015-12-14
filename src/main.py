@@ -86,8 +86,8 @@ def main():
         pygame.display.set_caption('Elevation - Level {}'.format(i[0] + 1))
         screenRect = screen.get_rect()
 
-        win_time = 1.0
-        lose_time = 1.0
+        win_time = 0.5
+        lose_time = 0.5
         reset_time = 1.0
         if level.time_limit:
             time_limit = level.time_limit
@@ -118,6 +118,8 @@ def main():
         max_fps = 0
 
         reset = [False]
+
+        paused = False
 
         while not reset[0]:
             dt = clock.tick(200) / 1000.0
@@ -155,23 +157,24 @@ def main():
                 reset_time = 1.0
 
             # level.update(dt, dx, dy)
-            robots.update(dt, list(itertools.chain(level.walls, (p.body for p in lifts))))
-            lifts.update(dt)
-            for button in level.buttons:
-                button.update(dt)
-                if not button.pressed:
-                    for robot in robots:
-                        if button.rect.contains(robot.rect):
-                            button.press()
-                            break
-                else:
-                    pressed = False
-                    for robot in robots:
-                        if button.rect.contains(robot.rect):
-                            pressed = True
-                            break
-                    if not pressed:
-                        button.release()
+            if not paused:
+                robots.update(dt, list(itertools.chain(level.walls, (p.body for p in lifts))))
+                lifts.update(dt)
+                for button in level.buttons:
+                    button.update(dt)
+                    if not button.pressed:
+                        for robot in robots:
+                            if button.rect.contains(robot.rect):
+                                button.press()
+                                break
+                    else:
+                        pressed = False
+                        for robot in robots:
+                            if button.rect.contains(robot.rect):
+                                pressed = True
+                                break
+                        if not pressed:
+                            button.release()
             remove = []
             for robot in robots:
                 for goal in level.goals:
@@ -193,6 +196,16 @@ def main():
                     if lose_time <= 0:
                         lose_level()
                     break
+                else:
+                    for spikes in level.spikes:
+                        if robot.rect.colliderect(spikes):
+                            paused = True
+                            lose_time -= dt
+                            if lose_time <= 0:
+                                lose_level()
+                                break
+                    if paused:
+                        break
             if not paused:
                 level_times[i[0]] += dt
 
