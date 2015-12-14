@@ -28,6 +28,7 @@ class Level(object):
         self.spikes = []
         self.teleporters = []
         self.endpoints = []
+        self.conveyors = []
         self.groups = {}
         self.openDoors = pygame.sprite.Group()
         
@@ -107,6 +108,9 @@ class Level(object):
                     if "Endpoint" in properties and properties["Endpoint"] == "True":
                         floor_height = int(self.data.get_tileset_from_gid(self.data.get_tile_gid(x, y, layer)).properties["Floorheight"])
                         self.endpoints.append((x * tw - left + tw/2, y * th - top + th - floor_height - 0.1))
+                    if "Conveyor" in properties and properties["Conveyor"] == "True":
+                        direction = int(properties["Dir"])
+                        self.conveyors.append((pygame.Rect((x * tw - left, y * th - top), (tw, th)), direction))
 
     def draw(self, rect, surface):
         if self.data.background_color:

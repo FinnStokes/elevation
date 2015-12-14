@@ -8,7 +8,7 @@
    <property name="Floorheight" value="37"/>
    <property name="Wallwidth" value="37"/>
   </properties>
-  <image source="FullWallkindsSheet.png" trans="ffffff" width="904" height="576"/>
+  <image source="FullWallkindsSheet.png" trans="ffffff" width="904" height="768"/>
   <tile id="0">
    <properties>
     <property name="Floor" value="True"/>
@@ -198,10 +198,24 @@
     <property name="Wallpos" value="75"/>
    </properties>
   </tile>
+  <tile id="24">
+   <properties>
+    <property name="Conveyor" value="True"/>
+    <property name="Dir" value="-1"/>
+    <property name="Floor" value="True"/>
+   </properties>
+  </tile>
+  <tile id="25">
+   <properties>
+    <property name="Conveyor" value="True"/>
+    <property name="Dir" value="1"/>
+    <property name="Floor" value="True"/>
+   </properties>
+  </tile>
  </tileset>
  <layer name="Tile Layer 1" width="9" height="4">
   <data encoding="base64" compression="zlib">
-   eJxNykEOgCAMBdFKo0QUFRX1/id1SP6Cxcu0aSczC1jgatuLemPXPKiujuqBCxlb95twav/wYu5uFSse/UT8VRABTQ==
+   eJwtykkOgDAMwMBABYidssP/H4qRfBi5SVpHRIkeyf5ztjtm349NtrILNoyY3L3osDrfuNCi8HZgwOmfBh9j6AF+
   </data>
  </layer>
 </map>

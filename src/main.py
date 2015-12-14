@@ -192,6 +192,10 @@ def main():
                                 dest = endpoint
                         robot.moveto(dest)
                         robot.contact = []
+                for conveyor, direction in level.conveyors:
+                    if conveyor.contains(robot.rect):
+                        if robot.body.vel[0]*direction < 0:
+                            robot.target_vel = (-robot.target_vel[0], robot.target_vel[1])
                         
             for robot in remove:
                 robots.remove(robot)
