@@ -48,7 +48,7 @@ def main():
     # gameover_screen = pygame.image.load(os.path.join("data", "gameover.png"))
     # gameover_rect = gameover_screen.get_rect()
     # gameover_rect.center = screenRect.center
-    # font = pygame.font.SysFont(pygame.font.match_font("sans", "arial"), 50)
+    font = pygame.font.SysFont("sans,arial", 30)
     
     # splash = True
     # while splash:
@@ -88,6 +88,10 @@ def main():
         win_time = 1.0
         lose_time = 1.0
         reset_time = 1.0
+        if level.time_limit:
+            time_limit = level.time_limit
+        else:
+            time_limit = float("+inf")
 
         # level.dx = 0
         # level.dy = 0
@@ -175,6 +179,11 @@ def main():
                     break
             if not paused:
                 level_times[i[0]] += dt
+
+                time_limit -= dt
+                if time_limit <= 0:
+                    print("Oops! You ran out of time")
+                    reset[0] = True
             # guards.update(dt, dx, dy)
 
             # Blit everything to the screen
@@ -186,6 +195,10 @@ def main():
             #     img = pygame.Surface(body[0].size)
             #     img.fill((0, 0, 100))
             #     screen.blit(img, body[0].pos)
+            time_remaining = font.render("{:.1f}".format(time_limit), True, (100,0,0))
+            fontrect = time_remaining.get_rect()
+            fontrect.midtop = screenRect.midtop
+            screen.blit(time_remaining, fontrect.topleft)
             pygame.display.flip()
 
         # splash = True

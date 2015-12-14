@@ -11,6 +11,10 @@ class Level(object):
     def __init__(self, filename):
         self.data = pytmxutil.load_pygame(filename)
         self.surface = pygame.Surface((self.data.width*self.data.tilewidth, self.data.height*self.data.tileheight))
+        if "Timelimit" in self.data.properties:
+            self.time_limit = float(self.data.properties["Timelimit"])
+        else:
+            self.time_limit = None
         self.walls = []
         self.goals = []
         self.spawn = []
