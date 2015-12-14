@@ -9,11 +9,12 @@ TOP = 3
 BOTTOM = 4
 
 class Body(object):
-    def __init__(self, pos, size, vel=(0,0), acc=(0,0)):
+    def __init__(self, pos, size, vel=(0,0), acc=(0,0), solid=True):
         self.pos = pos
         self.size = size
         self.vel = vel
         self.acc = acc
+        self.solid = solid
 
     @property
     def left(self):
@@ -111,6 +112,11 @@ class Body(object):
                 yield b
     
     def next_contact(self, other):
+        inf = float('+inf')
+
+        if not other.solid:
+            return inf, UNKNOWN
+        
         ax = self.acc[0] - other.acc[0]
         ay = self.acc[1] - other.acc[1]
 
@@ -223,6 +229,9 @@ class Body(object):
         return inf, UNKNOWN
                     
     def contact_end(self, other, side):
+        if not other.solid:
+            return 0
+
         ax = self.acc[0] - other.acc[0]
         ay = self.acc[1] - other.acc[1]
 
@@ -306,5 +315,6 @@ class Body(object):
             pos = (self.pos[0] + self.vel[0]*dt + self.acc[0]*(dt**2)/2, self.pos[1] + self.vel[1]*dt + self.acc[1]*(dt**2)/2),
             size = self.size,
             vel = (self.vel[0] + self.acc[0]*dt, self.vel[1] + self.acc[1]*dt),
-            acc = self.acc
+            acc = self.acc,
+            solid = self.solid
         )

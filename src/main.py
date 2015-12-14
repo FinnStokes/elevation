@@ -80,6 +80,7 @@ def main():
     lift_img = pygame.image.load("data/platform.png")
     while i[0] < len(levels):
         level = levels[i[0]]
+        level.refresh(level.surface.get_rect())
 
         screen = pygame.display.set_mode(level.surface.get_size())
         pygame.display.set_caption('Elevation - Level {}'.format(i[0] + 1))
@@ -156,6 +157,21 @@ def main():
             # level.update(dt, dx, dy)
             robots.update(dt, list(itertools.chain(level.walls, (p.body for p in lifts))))
             lifts.update(dt)
+            for button in level.buttons:
+                button.update(dt)
+                if not button.pressed:
+                    for robot in robots:
+                        if button.rect.contains(robot.rect):
+                            button.press()
+                            break
+                else:
+                    pressed = False
+                    for robot in robots:
+                        if button.rect.contains(robot.rect):
+                            pressed = True
+                            break
+                    if not pressed:
+                        button.release()
             remove = []
             for robot in robots:
                 for goal in level.goals:
