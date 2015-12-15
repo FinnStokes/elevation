@@ -123,7 +123,6 @@
    <property name="Button" value="True"/>
    <property name="Floor" value="True"/>
    <property name="Target" value="Blue"/>
-   <property name="Toggle" value="True"/>
   </properties>
  </tile>
  <tile id="17">
@@ -161,7 +160,6 @@
    <property name="Button" value="True"/>
    <property name="Floor" value="True"/>
    <property name="Target" value="Green"/>
-   <property name="Timeout" value="5.0"/>
   </properties>
  </tile>
  <tile id="21">

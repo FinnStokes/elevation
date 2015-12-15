@@ -3,4 +3,8 @@ basic_1.tmx
 basic_2.tmx
 learn_button.tmx
 buttons_1.tmx
+buttons_3.tmx
 buttons_2.tmx
+learn_teleporter.tmx
+teleporter_1.tmx
+teleporter_2.tmx

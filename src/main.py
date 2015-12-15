@@ -240,10 +240,11 @@ def main():
             #     img = pygame.Surface(body[0].size)
             #     img.fill((0, 0, 100))
             #     screen.blit(img, body[0].pos)
-            time_remaining = font.render("{:.1f}".format(time_limit), True, (100,0,0))
-            fontrect = time_remaining.get_rect()
-            fontrect.midtop = screenRect.midtop
-            screen.blit(time_remaining, fontrect.topleft)
+            if time_limit < float("+inf"):
+                time_remaining = font.render("{:.1f}".format(time_limit), True, (100,0,0))
+                fontrect = time_remaining.get_rect()
+                fontrect.midtop = screenRect.midtop
+                screen.blit(time_remaining, fontrect.topleft)
             pygame.display.flip()
 
         # splash = True
