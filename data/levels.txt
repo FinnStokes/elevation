@@ -1,3 +1,6 @@
-testlevel.tmx
-4level.tmx
-5level.tmx
+learn_lift.tmx
+basic_1.tmx
+basic_2.tmx
+learn_button.tmx
+buttons_1.tmx
+buttons_2.tmx

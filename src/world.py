@@ -71,14 +71,14 @@ class Level(object):
                             inshaft.append((x,y))
                             shaft_top = y
                             while shaft_top > 0:
-                                prop = self.data.get_tile_properties(x, shaft_top-1, layer)
+                                prop = self.data.get_tile_properties(x, shaft_top-1, layer) or {}
                                 if "Liftshaft" not in prop or prop["Liftshaft"] != "True":
                                     break
                                 shaft_top = shaft_top - 1
                                 inshaft.append((x,shaft_top))
                             shaft_bottom = y
                             while shaft_bottom < self.data.height-1:
-                                prop = self.data.get_tile_properties(x, shaft_bottom+1, layer)
+                                prop = self.data.get_tile_properties(x, shaft_bottom+1, layer) or {}
                                 if "Liftshaft" not in prop or prop["Liftshaft"] != "True":
                                     break
                                 shaft_bottom = shaft_bottom + 1
